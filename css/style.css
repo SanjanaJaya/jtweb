@@ -1961,3 +1961,154 @@ textarea.form-control {
         grid-template-columns: 1fr;
     }
 }
+
+/* --- HORIZONTAL VECTOR FLEET MARQUEE --- */
+.vector-ticker-section {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F5 50%, #FFFFFF 100%);
+    padding: 2.5rem 0;
+    overflow: hidden;
+    position: relative;
+    border-top: 1px solid rgba(229, 9, 20, 0.2);
+    border-bottom: 1px solid rgba(229, 9, 20, 0.2);
+    box-shadow: 0 10px 30px rgba(229, 9, 20, 0.05);
+}
+
+.vector-ticker-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    position: relative;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-drag: none;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE/Edge */
+}
+
+.vector-ticker-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Blink */
+}
+
+.vector-ticker-track {
+    display: inline-flex;
+    align-items: center;
+    gap: 5rem;
+    width: max-content;
+    padding: 0.5rem 0;
+}
+
+.vector-truck-img {
+    height: 180px;
+    width: auto;
+    object-fit: contain;
+    cursor: pointer;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.12));
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s ease;
+    flex-shrink: 0;
+    -webkit-user-drag: none;
+}
+
+.vector-truck-img:hover {
+    transform: scale(1.12);
+    filter: drop-shadow(0 16px 32px rgba(229, 9, 20, 0.25));
+}
+
+@media (max-width: 768px) {
+    .vector-truck-img {
+        height: 120px;
+    }
+    .vector-ticker-track {
+        gap: 3rem;
+    }
+}
+
+.vector-truck-code {
+    background: var(--primary);
+    color: #FFF;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+}
+
+.vector-truck-name {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Vector Art Popup Modal */
+.vector-popup-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 3500;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition-normal);
+}
+
+.vector-popup-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.vector-popup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 540px;
+    padding: 2.25rem;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
+    text-align: center;
+    transform: scale(0.95);
+    transition: var(--transition-normal);
+}
+
+.vector-popup-backdrop.active .vector-popup-card {
+    transform: scale(1);
+}
+
+.vector-popup-badge {
+    display: inline-block;
+    background: var(--primary);
+    color: #FFF;
+    font-size: 0.85rem;
+    font-weight: 800;
+    padding: 0.35rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 0.75rem;
+}
+
+.vector-popup-title {
+    font-size: 1.5rem;
+    color: var(--text-main);
+    margin-bottom: 1.5rem;
+}
+
+.vector-popup-img-container {
+    background: linear-gradient(135deg, #0F172A 0%, #1E1B1E 100%);
+    border-radius: var(--radius-md);
+    padding: 2rem 1.5rem;
+    margin-bottom: 1.75rem;
+    border: 1px solid rgba(229, 9, 20, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vector-popup-preview {
+    max-width: 100%;
+    height: 140px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
+}
+

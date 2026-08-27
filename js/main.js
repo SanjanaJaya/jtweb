@@ -187,3 +187,140 @@ document.getElementById('serviceSelect')?.addEventListener('change', (e) => {
         vehicleGroup.style.display = 'none';
     }
 });
+
+/**
+ * VECTOR ART POPUP MODAL HANDLER
+ */
+let currentActiveVectorId = 'JT-001';
+
+window.openVectorPopup = function(imgUrl, vehicleCode, vehicleName) {
+    const popupModal = document.getElementById('vectorPopupModal');
+    const popupImg = document.getElementById('vectorPopupImg');
+    const popupCode = document.getElementById('vectorPopupCode');
+    const popupTitle = document.getElementById('vectorPopupTitle');
+    
+    currentActiveVectorId = vehicleCode;
+
+    if (popupImg) popupImg.src = imgUrl;
+    if (popupCode) popupCode.innerText = vehicleCode;
+    if (popupTitle) popupTitle.innerText = vehicleName;
+    
+    if (popupModal) {
+        popupModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+};
+
+function closeVectorPopup() {
+    const popupModal = document.getElementById('vectorPopupModal');
+    if (popupModal) {
+        popupModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+document.getElementById('vectorPopupClose')?.addEventListener('click', closeVectorPopup);
+document.getElementById('vectorPopupModal')?.addEventListener('click', (e) => {
+    if (e.target.id === 'vectorPopupModal') closeVectorPopup();
+});
+
+document.getElementById('vectorPopupExploreBtn')?.addEventListener('click', () => {
+    closeVectorPopup();
+    if (typeof window.openVehicleModalGlobal === 'function') {
+        window.openVehicleModalGlobal(currentActiveVectorId);
+    } else {
+        document.getElementById('fleet')?.scrollIntoView({ behavior: 'smooth' });
+    }
+});
+
+/**
+ * VECTOR TICKER SMOOTH DRAG-TO-SCROLL & INFINITE AUTO-TICKER
+ */
+const tickerContainer = document.querySelector('.vector-ticker-container');
+const tickerTrack = document.querySelector('.vector-ticker-track');
+
+if (tickerContainer && tickerTrack) {
+    let isMouseDown = false;
+    let isMouseHovered = false;
+    let startX = 0;
+    let scrollLeftStart = 0;
+    let floatScrollPos = 0;
+    const autoSpeed = 0.6; // Perfect smooth slow-motion move to left
+
+    function getSingleGroupWidth() {
+        const images = tickerTrack.querySelectorAll('.vector-truck-img');
+        if (images.length >= 14) {
+            const dist = images[7].offsetLeft - images[0].offsetLeft;
+            if (dist > 0) return dist;
+        }
+        return tickerTrack.scrollWidth / 2;
+    }
+
+    // 1. 60fps Infinite Auto-Scroll Loop (Float Accumulator)
+    function autoScrollLoop() {
+        if (!isMouseDown && !isMouseHovered) {
+            floatScrollPos += autoSpeed;
+            const groupWidth = getSingleGroupWidth();
+            if (groupWidth > 0 && floatScrollPos >= groupWidth) {
+                floatScrollPos -= groupWidth; // Retains exact subpixel remainder for seamless loop
+            }
+            tickerContainer.scrollLeft = floatScrollPos;
+        } else {
+            floatScrollPos = tickerContainer.scrollLeft;
+        }
+        requestAnimationFrame(autoScrollLoop);
+    }
+    requestAnimationFrame(autoScrollLoop);
+
+    // Hover detection
+    tickerContainer.addEventListener('mouseenter', () => isMouseHovered = true);
+    tickerContainer.addEventListener('mouseleave', () => {
+        isMouseHovered = false;
+        isMouseDown = false;
+        tickerContainer.style.cursor = 'grab';
+    });
+
+    // 2. Mouse Drag-to-Scroll (Ultra Smooth)
+    tickerContainer.addEventListener('mousedown', (e) => {
+        isMouseDown = true;
+        startX = e.pageX - tickerContainer.offsetLeft;
+        scrollLeftStart = tickerContainer.scrollLeft;
+        floatScrollPos = scrollLeftStart;
+        tickerContainer.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isMouseDown) return;
+        const x = e.pageX - tickerContainer.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        floatScrollPos = scrollLeftStart - walk;
+        tickerContainer.scrollLeft = floatScrollPos;
+    });
+
+    window.addEventListener('mouseup', () => {
+        isMouseDown = false;
+        tickerContainer.style.cursor = 'grab';
+    });
+
+    // 3. Mobile Touch Drag
+    let touchStartX = 0;
+    let touchStartScroll = 0;
+
+    tickerContainer.addEventListener('touchstart', (e) => {
+        isMouseHovered = true;
+        touchStartX = e.touches[0].pageX - tickerContainer.offsetLeft;
+        touchStartScroll = tickerContainer.scrollLeft;
+        floatScrollPos = touchStartScroll;
+    }, { passive: true });
+
+    tickerContainer.addEventListener('touchmove', (e) => {
+        const x = e.touches[0].pageX - tickerContainer.offsetLeft;
+        const walk = (x - touchStartX) * 1.5;
+        floatScrollPos = touchStartScroll - walk;
+        tickerContainer.scrollLeft = floatScrollPos;
+    }, { passive: true });
+
+    tickerContainer.addEventListener('touchend', () => {
+        isMouseHovered = false;
+    });
+}

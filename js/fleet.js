@@ -282,8 +282,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Expose close to window for main.js interop
+    // Expose close & open functions to window for interop
     window.closeVehicleModalGlobal = closeVehicleModalFunc;
+    window.openVehicleModalGlobal = openVehicleModal;
 
 
     /**
