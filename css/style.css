@@ -350,7 +350,8 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    padding-top: 100px;
+    padding-top: 160px;
+    padding-bottom: 80px;
 }
 
 .hero-bg-video {
@@ -458,7 +459,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: var(--radius-lg);
     padding: 3rem;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
     box-shadow: var(--shadow-card);
 }
