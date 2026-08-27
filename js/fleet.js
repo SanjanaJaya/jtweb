@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 
                 <div class="modal-action-footer">
-                    <button class="btn btn-primary" onclick="window.inquireAboutVehicle('${vehicle.id}')" style="flex:1;">
+                    <button class="btn btn-primary" onclick="window.inquireAboutVehicle('${vehicle.id}')" style="width:100%;">
                         Request Quote for ${vehicle.id} <i data-lucide="calendar"></i>
                     </button>
                 </div>
