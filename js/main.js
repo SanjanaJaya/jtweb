@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- COUNTER ANIMATION ---
-    const statNumbers = document.querySelectorAll('.stat-number');
+    const statNumbers = document.querySelectorAll('.stat-number [data-target]');
     let hasAnimated = false;
 
     const animateCounters = () => {
@@ -82,12 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 current += increment;
                 if (current < target) {
                     counter.innerText = Math.ceil(current).toString().padStart(2, '0');
-                    if (target === 100 && current > 9) counter.innerText = Math.ceil(current); // Formatting hack for 100
                     requestAnimationFrame(updateCounter);
                 } else {
                     counter.innerText = target.toString().padStart(2, '0');
-                    if (target === 100) counter.innerText = "100";
-                    if (target === 8) counter.innerText = "08+";
                 }
             };
             updateCounter();
