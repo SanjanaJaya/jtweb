@@ -1,0 +1,5 @@
+# Environment & Credentials Configuration
+js/config.js
+.env
+.env.local
+*.log

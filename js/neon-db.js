@@ -4,20 +4,18 @@
  * Direct Serverless HTTP Driver connection to Neon PostgreSQL database.
  */
 
-// 1. NEON POSTGRES CONNECTION STRING:
-const NEON_CONNECTION_STRING = "postgresql://neondb_owner:npg_8LwEDF4ekVYH@ep-little-smoke-ax2x3j4h-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
-
 /**
  * Execute SQL Query against Neon via HTTP API
  */
 async function queryNeon(sqlQuery, params = []) {
-    if (!NEON_CONNECTION_STRING || NEON_CONNECTION_STRING.includes("YOUR_NEON_CONNECTION_STRING_HERE")) {
-        console.warn("Neon Postgres connection string not configured. Falling back to local data.");
+    const connectionString = window.NEON_CONNECTION_STRING || "";
+    if (!connectionString || connectionString.includes("YOUR_NEON_CONNECTION_STRING_HERE")) {
+        console.warn("Neon Postgres connection string not configured. Set window.NEON_CONNECTION_STRING in js/config.js.");
         return null;
     }
 
     try {
-        const urlObj = new URL(NEON_CONNECTION_STRING);
+        const urlObj = new URL(connectionString);
         // Strip -pooler for Neon's HTTP API endpoint
         const host = urlObj.hostname.replace('-pooler', '');
         const password = urlObj.password;
