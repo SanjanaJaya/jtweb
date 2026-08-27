@@ -17,8 +17,11 @@
 <body>
 
     <div class="admin-layout">
+        <!-- Sidebar Backdrop Overlay for Mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="adminSidebar">
             <div class="sidebar-brand">
                 <img src="https://i.postimg.cc/DZT2hQGy/New-Logo-White-BG.png" alt="JT Logo" style="height: 32px;">
                 <div class="brand-title" style="display:flex; flex-direction:column; font-family:var(--font-heading); font-size:0.9rem; font-weight:800; line-height:1.1; letter-spacing:0.5px;">
@@ -28,10 +31,8 @@
             </div>
             
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
-                <a href="#" class="nav-item"><i data-lucide="truck"></i> Vehicle Fleet</a>
-                <a href="#" class="nav-item"><i data-lucide="inbox"></i> Inquiries <span class="badge">Demo</span></a>
-                <a href="#" class="nav-item"><i data-lucide="settings"></i> Settings</a>
+                <a href="javascript:void(0)" class="nav-item active" data-tab="fleet"><i data-lucide="truck"></i> Vehicle Fleet</a>
+                <a href="javascript:void(0)" class="nav-item" data-tab="inquiries"><i data-lucide="inbox"></i> Inquiries <span class="badge">Live</span></a>
             </nav>
 
             <div class="sidebar-bottom">
@@ -42,69 +43,101 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="topbar">
-                <h2>Fleet Management</h2>
-                <div class="topbar-actions">
-                    <button class="btn btn-outline" id="resetDataBtn"><i data-lucide="rotate-ccw"></i> Reset Demo Data</button>
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <button class="mobile-toggle-btn" id="adminMobileToggle"><i data-lucide="menu"></i></button>
+                    <h2 id="topbarTitle">Fleet Management</h2>
+                </div>
+                <div class="topbar-actions" id="topbarActions">
                     <button class="btn btn-primary" id="addVehicleBtn"><i data-lucide="plus"></i> Add Vehicle</button>
                 </div>
             </header>
 
-            <!-- KPI Cards -->
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-icon"><i data-lucide="truck"></i></div>
-                    <div class="kpi-info">
-                        <span class="kpi-label">Total Vehicles</span>
-                        <strong class="kpi-value" id="kpiTotal">0</strong>
+            <!-- Dashboard & Fleet View -->
+            <div id="fleetTabContent">
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i data-lucide="truck"></i></div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Total Vehicles</span>
+                            <strong class="kpi-value" id="kpiTotal">0</strong>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon amber"><i data-lucide="check-circle"></i></div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Active / Available</span>
+                            <strong class="kpi-value" id="kpiActive">0</strong>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon cyan"><i data-lucide="snowflake"></i></div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Freezer Trucks</span>
+                            <strong class="kpi-value" id="kpiFreezer">0</strong>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon default"><i data-lucide="package"></i></div>
+                        <div class="kpi-info">
+                            <span class="kpi-label">Aluminum Body</span>
+                            <strong class="kpi-value" id="kpiAluminum">0</strong>
+                        </div>
                     </div>
                 </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon amber"><i data-lucide="check-circle"></i></div>
-                    <div class="kpi-info">
-                        <span class="kpi-label">Active / Available</span>
-                        <strong class="kpi-value" id="kpiActive">0</strong>
+
+                <!-- Data Table -->
+                <div class="card table-card">
+                    <div class="card-header">
+                        <h3>Vehicle Inventory</h3>
+                        <div class="search-box">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="tableSearch" placeholder="Search vehicles...">
+                        </div>
                     </div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon cyan"><i data-lucide="snowflake"></i></div>
-                    <div class="kpi-info">
-                        <span class="kpi-label">Freezer Trucks</span>
-                        <strong class="kpi-value" id="kpiFreezer">0</strong>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-icon default"><i data-lucide="package"></i></div>
-                    <div class="kpi-info">
-                        <span class="kpi-label">Aluminum Body</span>
-                        <strong class="kpi-value" id="kpiAluminum">0</strong>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Vehicle Name</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vehicleTableBody">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Data Table -->
-            <div class="card table-card">
-                <div class="card-header">
-                    <h3>Vehicle Inventory</h3>
-                    <div class="search-box">
-                        <i data-lucide="search"></i>
-                        <input type="text" id="tableSearch" placeholder="Search vehicles...">
+            <!-- Customer Inquiries Tab -->
+            <div id="inquiriesTabContent" style="display:none;">
+                <div class="card table-card">
+                    <div class="card-header">
+                        <h3>Customer Quote Inquiries</h3>
+                        <button class="btn btn-outline" id="refreshInquiriesBtn"><i data-lucide="refresh-cw"></i> Refresh</button>
                     </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Vehicle Name</th>
-                                <th>Category</th>
-                                <th>Status</th>
-                                <th class="text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="vehicleTableBody">
-                            <!-- Injected by JS -->
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer Name</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Requested Vehicle</th>
+                                    <th>Message</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inquiriesTableBody">
+                                <tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">No inquiries received yet.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </main>
@@ -156,20 +189,20 @@
                     
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Body Length</label>
+                            <label>Body Length (ft)</label>
                             <input type="text" id="sLength" class="form-control" required placeholder="e.g. 14.5 ft">
                         </div>
                         <div class="form-group">
                             <label>Engine</label>
-                            <input type="text" id="sEngine" class="form-control" required placeholder="e.g. 4JZ1">
+                            <input type="text" id="sEngine" class="form-control" required placeholder="e.g. 4JZ1-TCS Turbo Diesel">
                         </div>
                         <div class="form-group">
-                            <label>Payload Capacity</label>
+                            <label>Payload Capacity (Tons)</label>
                             <input type="text" id="sPayload" class="form-control" required placeholder="e.g. 4.5 Tons">
                         </div>
                         <div class="form-group">
-                            <label>Freezer Unit</label>
-                            <input type="text" id="sFreezer" class="form-control" required placeholder="e.g. Sub-Zero or N/A">
+                            <label>Freezer Unit Temp (°C)</label>
+                            <input type="text" id="sFreezer" class="form-control" required placeholder="e.g. -20°C to +15°C (or N/A)">
                         </div>
                     </div>
 
@@ -190,6 +223,7 @@
     </div>
 
     <!-- Scripts -->
+    <script src="../js/neon-db.js"></script>
     <script src="../js/fleet-data.js"></script>
     <script src="js/admin.js"></script>
     <script>

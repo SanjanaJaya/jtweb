@@ -32,13 +32,28 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Initialize Fleet
      */
-    function initFleet() {
+    async function initFleet() {
         if (typeof window.getFleetData !== 'function') {
             console.error("Fleet Data Module not loaded!");
             return;
         }
+        // Initial render from local cache
         currentFleetData = window.getFleetData();
         renderFleet();
+
+        // Async fetch from Neon DB if available
+        if (typeof window.fetchVehiclesFromNeon === 'function') {
+            try {
+                const neonVehicles = await window.fetchVehiclesFromNeon();
+                if (neonVehicles && neonVehicles.length > 0) {
+                    currentFleetData = neonVehicles;
+                    renderFleet();
+                    console.log("Loaded live fleet data from Neon Postgres!");
+                }
+            } catch (e) {
+                console.warn("Could not fetch from Neon DB, using default data.", e);
+            }
+        }
     }
 
     /**
@@ -72,10 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (filteredData.length === 0) {
             fleetGrid.innerHTML = `
-                <div class="empty-fleet-state">
-                    <i data-lucide="search-x"></i>
-                    <h3>No Vehicles Found</h3>
-                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Try adjusting your filters or search criteria.</p>
+                <div class="empty-fleet-state" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
+                    <i data-lucide="truck" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h3>No Vehicles Available</h3>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">There are currently no vehicles in the database. Add new vehicles using the <a href="admin/index.html" style="color: var(--primary); font-weight:600;">Admin Panel</a>.</p>
                 </div>
             `;
             lucide.createIcons();
@@ -158,13 +173,28 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `).join('');
 
-        let specsHtml = Object.entries(vehicle.specifications).map(([key, val]) => {
+        let specsHtml = Object.entries(vehicle.specifications || {}).map(([key, val]) => {
+            let formattedVal = val ? String(val).trim() : '';
+            
+            // Enforce ft unit for Body Length
+            if (key === 'bodyLength' && formattedVal && !/ft|feet|m/i.test(formattedVal)) {
+                formattedVal += ' ft';
+            }
+            // Enforce Tons unit for Payload Capacity
+            if (key === 'payloadCapacity' && formattedVal && !/ton|tons|t|kg/i.test(formattedVal)) {
+                formattedVal += ' Tons';
+            }
+            // Enforce °C unit for Freezer Unit
+            if (key === 'freezer' && vehicle.category === 'freezer' && formattedVal && !/°C|C|celsius/i.test(formattedVal) && /-?\d+/.test(formattedVal)) {
+                formattedVal += '°C';
+            }
+
             // Format camelCase key to Title Case
             const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
             return `
                 <div class="spec-cell">
                     <span class="spec-key">${formattedKey}</span>
-                    <span class="spec-val">${val}</span>
+                    <span class="spec-val">${formattedVal}</span>
                 </div>
             `;
         }).join('');

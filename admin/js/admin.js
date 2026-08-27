@@ -29,8 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelModalBtn = document.getElementById('cancelModalBtn');
     const vehicleForm = document.getElementById('vehicleForm');
     const modalTitle = document.getElementById('modalTitle');
-    
-    const resetDataBtn = document.getElementById('resetDataBtn');
 
     // Form Inputs
     const editModeIndex = document.getElementById('editModeIndex');
@@ -101,23 +99,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', async (e) => {
                 if (confirm('Are you sure you want to delete this vehicle?')) {
                     const idx = e.currentTarget.getAttribute('data-index');
+                    const deletedVehicle = fleetData[idx];
                     fleetData.splice(idx, 1);
+                    
+                    if (deletedVehicle && deletedVehicle.id && typeof window.deleteVehicleFromNeon === 'function') {
+                        try {
+                            await window.deleteVehicleFromNeon(deletedVehicle.id);
+                            console.log("Deleted vehicle from Neon DB:", deletedVehicle.id);
+                        } catch (err) {
+                            console.warn("Could not delete from Neon DB:", err);
+                        }
+                    }
+                    
                     saveData();
                 }
             });
         });
     }
 
-    function saveData() {
-        if (window.saveFleetData(fleetData)) {
-            renderDashboard();
-            // Dispatch event for any open main pages to listen (if testing in same context, usually doesn't work across tabs without storage event listener, but good practice)
-            window.dispatchEvent(new Event('fleetDataUpdated'));
-        } else {
-            alert('Failed to save data!');
+    async function saveData(savedVehicle) {
+        window.saveFleetData(fleetData);
+        renderDashboard();
+        window.dispatchEvent(new Event('fleetDataUpdated'));
+
+        if (savedVehicle && typeof window.saveVehicleToNeon === 'function') {
+            try {
+                await window.saveVehicleToNeon(savedVehicle);
+                console.log("Saved vehicle to Neon DB:", savedVehicle.id);
+            } catch (err) {
+                console.warn("Could not save to Neon DB:", err);
+            }
         }
     }
 
@@ -172,6 +186,20 @@ document.addEventListener('DOMContentLoaded', () => {
             imgArray = ["https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80"];
         }
 
+        // Auto-format Units
+        let formattedLength = sLength.value.trim();
+        if (formattedLength && !/ft|feet|m/i.test(formattedLength)) formattedLength += ' ft';
+
+        let formattedPayload = sPayload.value.trim();
+        if (formattedPayload && !/ton|tons|t|kg/i.test(formattedPayload)) formattedPayload += ' Tons';
+
+        let formattedFreezer = sFreezer.value.trim();
+        if (vCategory.value !== 'freezer') {
+            formattedFreezer = 'N/A (Dry Cargo)';
+        } else if (formattedFreezer && !/°C|C|celsius/i.test(formattedFreezer) && /-?\d+/.test(formattedFreezer)) {
+            formattedFreezer += '°C';
+        }
+
         const newVehicle = {
             id: vId.value,
             name: vName.value,
@@ -182,13 +210,13 @@ document.addEventListener('DOMContentLoaded', () => {
             description: vDesc.value,
             images: imgArray,
             specifications: {
-                bodyLength: sLength.value,
+                bodyLength: formattedLength || '14.5 ft',
                 bodyType: vCategory.value === 'freezer' ? 'Refrigerated Box' : 'Aluminum Container',
                 engine: sEngine.value,
-                wheels: "Standard",
+                wheels: "6 Nut Heavy Duty",
                 fuelType: "Diesel",
-                freezer: sFreezer.value,
-                payloadCapacity: sPayload.value
+                freezer: formattedFreezer || 'Sub-Zero (-20°C to +15°C)',
+                payloadCapacity: formattedPayload || '4.5 Tons'
             }
         };
 
@@ -199,30 +227,125 @@ document.addEventListener('DOMContentLoaded', () => {
             fleetData[idx] = newVehicle;
         }
 
-        saveData();
+        saveData(newVehicle);
         closeModal();
     });
 
     /**
-     * Search & Reset Logic
+     * Mobile Sidebar Drawer Controls (iOS / Android)
      */
-    tableSearch.addEventListener('input', (e) => {
-        currentSearchTerm = e.target.value;
-        renderDashboard();
+    const adminMobileToggle = document.getElementById('adminMobileToggle');
+    const adminSidebar = document.getElementById('adminSidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    function openSidebar() {
+        if (adminSidebar) adminSidebar.classList.add('open');
+        if (sidebarOverlay) sidebarOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        if (adminSidebar) adminSidebar.classList.remove('open');
+        if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (adminMobileToggle) {
+        adminMobileToggle.addEventListener('click', openSidebar);
+    }
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeSidebar);
+    }
+
+    /**
+     * Search Input Logic
+     */
+    if (tableSearch) {
+        tableSearch.addEventListener('input', (e) => {
+            currentSearchTerm = e.target.value;
+            renderDashboard();
+        });
+    }
+
+    /**
+     * TAB NAVIGATION & INQUIRIES LOGIC
+     */
+    const navItems = document.querySelectorAll('.sidebar-nav .nav-item[data-tab]');
+    const fleetTabContent = document.getElementById('fleetTabContent');
+    const inquiriesTabContent = document.getElementById('inquiriesTabContent');
+    const topbarTitle = document.getElementById('topbarTitle');
+    const topbarActions = document.getElementById('topbarActions');
+    const inquiriesTableBody = document.getElementById('inquiriesTableBody');
+    const refreshInquiriesBtn = document.getElementById('refreshInquiriesBtn');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetTab = e.currentTarget.getAttribute('data-tab');
+
+            // Update Active Link
+            navItems.forEach(i => i.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+
+            // Switch Views
+            if (targetTab === 'inquiries') {
+                if (fleetTabContent) fleetTabContent.style.display = 'none';
+                if (inquiriesTabContent) inquiriesTabContent.style.display = 'block';
+                if (topbarTitle) topbarTitle.innerText = 'Customer Quote Inquiries';
+                if (topbarActions) topbarActions.style.display = 'none';
+                renderInquiries();
+            } else {
+                if (fleetTabContent) fleetTabContent.style.display = 'block';
+                if (inquiriesTabContent) inquiriesTabContent.style.display = 'none';
+                if (topbarTitle) topbarTitle.innerText = 'Fleet Management';
+                if (topbarActions) topbarActions.style.display = 'flex';
+                renderDashboard();
+            }
+
+            // Close Mobile Sidebar on Selection
+            closeSidebar();
+        });
     });
 
-    resetDataBtn.addEventListener('click', () => {
-        if (confirm('Warning: This will restore the original demo fleet and overwrite your changes. Continue?')) {
-            fleetData = window.resetFleetData();
-            // Need to reload window to get clean state if deeply modified, or just clone DEFAULT_FLEET
-            if (typeof window.DEFAULT_FLEET !== 'undefined') {
-                fleetData = JSON.parse(JSON.stringify(window.DEFAULT_FLEET));
-                saveData();
-            } else {
-                location.reload();
+    /**
+     * Render Customer Inquiries from Neon DB
+     */
+    async function renderInquiries() {
+        if (!inquiriesTableBody) return;
+        inquiriesTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">Loading inquiries from Neon DB...</td></tr>`;
+
+        if (typeof window.queryNeon === 'function') {
+            try {
+                const rows = await window.queryNeon(`SELECT * FROM inquiries ORDER BY id DESC`);
+                if (rows && rows.length > 0) {
+                    inquiriesTableBody.innerHTML = '';
+                    rows.forEach(inq => {
+                        const tr = document.createElement('tr');
+                        const dateStr = inq.created_at ? new Date(inq.created_at).toLocaleDateString() : 'Recent';
+                        tr.innerHTML = `
+                            <td><strong>${inq.customer_name || 'N/A'}</strong></td>
+                            <td>${inq.customer_phone || 'N/A'}</td>
+                            <td>${inq.customer_email || 'N/A'}</td>
+                            <td><span class="badge" style="background:var(--primary); color:#fff;">${inq.vehicle_id || 'General'}</span></td>
+                            <td style="max-width:250px; font-size:13px;">${inq.message || '-'}</td>
+                            <td style="color:var(--text-muted); font-size:13px;">${dateStr}</td>
+                        `;
+                        inquiriesTableBody.appendChild(tr);
+                    });
+                    lucide.createIcons();
+                    return;
+                }
+            } catch (err) {
+                console.warn("Could not fetch inquiries from Neon DB:", err);
             }
         }
-    });
+        
+        inquiriesTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">No customer inquiries found.</td></tr>`;
+    }
+
+    if (refreshInquiriesBtn) {
+        refreshInquiriesBtn.addEventListener('click', renderInquiries);
+    }
 
     // Init
     renderDashboard();

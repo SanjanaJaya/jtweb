@@ -109,15 +109,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const toastBox = document.getElementById('toastBox');
 
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            const formData = {
+                name: document.getElementById('senderName')?.value || '',
+                phone: document.getElementById('senderPhone')?.value || '',
+                email: document.getElementById('senderEmail')?.value || '',
+                serviceType: document.getElementById('serviceSelect')?.value || 'general',
+                vehicleId: document.getElementById('inquiryVehicleId')?.value || null,
+                message: document.getElementById('messageText')?.value || ''
+            };
+
+            // Save to Neon DB if connected
+            if (typeof window.sendInquiryToNeon === 'function') {
+                try {
+                    await window.sendInquiryToNeon(formData);
+                    console.log("Inquiry saved to Neon Postgres DB!");
+                } catch (err) {
+                    console.warn("Could not save inquiry to Neon DB:", err);
+                }
+            }
+
             // Show toast notification
             toastBox.classList.add('show');
             
             // Reset form
             contactForm.reset();
-            document.getElementById('vehicleIdGroup').style.display = 'none';
+            const vehicleGroup = document.getElementById('vehicleIdGroup');
+            if (vehicleGroup) vehicleGroup.style.display = 'none';
             document.getElementById('serviceSelect').value = "";
 
             // Hide toast after 3.5s
