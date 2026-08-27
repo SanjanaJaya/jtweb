@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Jayasooriya Transport</title>
+    
+    <!-- Using same fonts as main site -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Admin styles -->
+    <link rel="stylesheet" href="css/admin.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <img src="https://i.postimg.cc/DZT2hQGy/New-Logo-White-BG.png" alt="JT Logo" style="height: 32px;">
+                <div class="brand-title" style="display:flex; flex-direction:column; font-family:var(--font-heading); font-size:0.9rem; font-weight:800; line-height:1.1; letter-spacing:0.5px;">
+                    <span style="color: var(--primary);">JAYASOORIYA</span>
+                    <span style="color: var(--text-main);">TRANSPORT</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="#" class="nav-item"><i data-lucide="truck"></i> Vehicle Fleet</a>
+                <a href="#" class="nav-item"><i data-lucide="inbox"></i> Inquiries <span class="badge">Demo</span></a>
+                <a href="#" class="nav-item"><i data-lucide="settings"></i> Settings</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <a href="../index.html" class="nav-item"><i data-lucide="external-link"></i> View Website</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <h2>Fleet Management</h2>
+                <div class="topbar-actions">
+                    <button class="btn btn-outline" id="resetDataBtn"><i data-lucide="rotate-ccw"></i> Reset Demo Data</button>
+                    <button class="btn btn-primary" id="addVehicleBtn"><i data-lucide="plus"></i> Add Vehicle</button>
+                </div>
+            </header>
+
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon"><i data-lucide="truck"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Total Vehicles</span>
+                        <strong class="kpi-value" id="kpiTotal">0</strong>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon amber"><i data-lucide="check-circle"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Active / Available</span>
+                        <strong class="kpi-value" id="kpiActive">0</strong>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon cyan"><i data-lucide="snowflake"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Freezer Trucks</span>
+                        <strong class="kpi-value" id="kpiFreezer">0</strong>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon default"><i data-lucide="package"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Aluminum Body</span>
+                        <strong class="kpi-value" id="kpiAluminum">0</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="card table-card">
+                <div class="card-header">
+                    <h3>Vehicle Inventory</h3>
+                    <div class="search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="tableSearch" placeholder="Search vehicles...">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Vehicle Name</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehicleTableBody">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add / Edit Modal -->
+    <div class="modal-backdrop" id="adminModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Vehicle</h3>
+                <button class="close-btn" id="closeModalBtn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="vehicleForm">
+                    <input type="hidden" id="editModeIndex" value="-1">
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Vehicle ID</label>
+                            <input type="text" id="vId" class="form-control" required placeholder="e.g. JT-007">
+                        </div>
+                        <div class="form-group">
+                            <label>Vehicle Name</label>
+                            <input type="text" id="vName" class="form-control" required placeholder="e.g. Isuzu NPR">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="vCategory" class="form-control" required>
+                                <option value="freezer">Freezer Truck</option>
+                                <option value="aluminum">Aluminum Body</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="vStatus" class="form-control" required>
+                                <option value="active">Active / Available</option>
+                                <option value="in_operation">In Operation</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>Description</label>
+                        <textarea id="vDesc" class="form-control" required rows="3" placeholder="Short description of the vehicle capability..."></textarea>
+                    </div>
+
+                    <h4 style="margin: 1.5rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">Technical Specifications</h4>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Body Length</label>
+                            <input type="text" id="sLength" class="form-control" required placeholder="e.g. 14.5 ft">
+                        </div>
+                        <div class="form-group">
+                            <label>Engine</label>
+                            <input type="text" id="sEngine" class="form-control" required placeholder="e.g. 4JZ1">
+                        </div>
+                        <div class="form-group">
+                            <label>Payload Capacity</label>
+                            <input type="text" id="sPayload" class="form-control" required placeholder="e.g. 4.5 Tons">
+                        </div>
+                        <div class="form-group">
+                            <label>Freezer Unit</label>
+                            <input type="text" id="sFreezer" class="form-control" required placeholder="e.g. Sub-Zero or N/A">
+                        </div>
+                    </div>
+
+                    <h4 style="margin: 1.5rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">Vehicle Images</h4>
+                    <div class="form-group">
+                        <label>Image URLs (Comma separated)</label>
+                        <textarea id="vImages" class="form-control" rows="2" placeholder="https://..., https://..."></textarea>
+                        <small style="color: #64748b; margin-top: 0.5rem; display:block;">For demo, paste external image URLs separated by commas.</small>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancelModalBtn">Cancel</button>
+                <button type="submit" form="vehicleForm" class="btn btn-primary" id="saveVehicleBtn">Save Vehicle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/fleet-data.js"></script>
+    <script src="js/admin.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

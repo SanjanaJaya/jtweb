@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jayasooriya Transport | Transport & Logistics Sri Lanka</title>
+    <meta name="description" content="Professional transport and logistics company in Sri Lanka, specializing in refrigerated freezer trucks and aluminum-body commercial transportation.">
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="brand-logo" style="display:flex; align-items:center; gap:0.75rem; text-decoration:none;">
+                <img src="https://i.postimg.cc/DZT2hQGy/New-Logo-White-BG.png" alt="Jayasooriya Transport Logo" class="brand-logo-img" id="mainLogo">
+                <div class="brand-title" style="display:flex; flex-direction:column; font-family:var(--font-heading); font-size:1.1rem; font-weight:800; line-height:1.1; letter-spacing:0.5px;">
+                    <span style="color: var(--primary);">JAYASOORIYA</span>
+                    <span style="color: var(--secondary);">TRANSPORT</span>
+                </div>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#fleet" class="nav-link">Fleet</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="#contact" class="btn btn-primary">Request Service</a>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MOBILE DRAWER -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div>
+            <div class="drawer-header">
+                <div class="brand-logo" style="display:flex; align-items:center; gap:0.75rem;">
+                    <img src="https://i.postimg.cc/DZT2hQGy/New-Logo-White-BG.png" alt="JT Logo" class="brand-logo-img" style="height: 48px;">
+                    <div class="brand-title" style="display:flex; flex-direction:column; font-family:var(--font-heading); font-size:1rem; font-weight:800; line-height:1.1; letter-spacing:0.5px;">
+                        <span style="color: var(--primary);">JAYASOORIYA</span>
+                        <span style="color: var(--secondary);">TRANSPORT</span>
+                    </div>
+                </div>
+                <button class="mobile-toggle" id="closeDrawer" style="display:block;">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <ul class="drawer-menu">
+                <li><a href="#home" class="drawer-link drawer-close-trigger">Home</a></li>
+                <li><a href="#about" class="drawer-link drawer-close-trigger">About Us</a></li>
+                <li><a href="#services" class="drawer-link drawer-close-trigger">Our Services</a></li>
+                <li><a href="#fleet" class="drawer-link drawer-close-trigger">Vehicle Fleet</a></li>
+                <li><a href="#contact" class="drawer-link drawer-close-trigger">Contact</a></li>
+                <li><a href="admin/index.html" class="drawer-link" style="color:var(--text-subtle); font-size:1rem; margin-top:2rem;">Admin Panel Demo</a></li>
+            </ul>
+        </div>
+        <a href="#contact" class="btn btn-primary drawer-close-trigger" style="width: 100%;">Request Transport Service</a>
+    </div>
+
+    <!-- HERO SECTION WITH VIDEO BACKGROUND -->
+    <section class="hero-video" id="home">
+        <video autoplay muted loop playsinline class="hero-bg-video">
+            <source src="assets/vehicles/demo-video.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+        
+        <div class="container hero-content-center">
+            <div class="section-tag"><i data-lucide="truck"></i> Next-Gen Logistics</div>
+            <h1 class="hero-title">Moving <span class="text-gradient">Sri Lanka</span> Forward.</h1>
+            <p class="hero-text">Reliable transport solutions backed by a growing fleet of modern vehicles. Specializing in temperature-controlled cold-chain and heavy commercial distribution.</p>
+            
+            <div class="hero-cta">
+                <a href="#fleet" class="btn btn-primary">Explore Our Fleet</a>
+                <a href="#contact" class="btn btn-secondary">Request Service</a>
+            </div>
+
+            <div class="hero-highlights">
+                <div class="highlight-item">
+                    <div class="highlight-icon"><i data-lucide="snowflake"></i></div>
+                    <span>Refrigerated Specialists</span>
+                </div>
+                <div class="highlight-item">
+                    <div class="highlight-icon"><i data-lucide="shield-check"></i></div>
+                    <span>24/7 Operations</span>
+                </div>
+                <div class="highlight-item">
+                    <div class="highlight-icon"><i data-lucide="map-pin"></i></div>
+                    <span>Island-wide Delivery</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HERO STATS BAR -->
+    <div class="container hero-stats-bar">
+        <div class="stats-card-container" id="statsContainer">
+            <div class="stat-item">
+                <div class="stat-number" data-target="8">00</div>
+                <div class="stat-label">Fleet Vehicles</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="24">00</div>
+                <div class="stat-label">Hour Support</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="100">000</div>
+                <div class="stat-label">% Commitment</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-target="1">00</div>
+                <div class="stat-label">Island Coverage</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT SECTION -->
+    <section class="about-section" id="about">
+        <div class="container about-grid">
+            <div class="about-image-stack">
+                <img src="assets/vehicles/aluminum-truck-1.png" alt="Jayasooriya Logistics" class="about-main-img" onerror="this.src='https://images.unsplash.com/photo-1592838064575-70ed626d3a0e?auto=format&fit=crop&w=800&q=80'">
+                <div class="about-experience-badge">
+                    <i data-lucide="quote" class="badge-quote-icon"></i>
+                    <div class="badge-quote-text">Built for the road. Driven by absolute reliability.</div>
+                </div>
+            </div>
+            <div class="about-content">
+                <div class="section-tag">About Us</div>
+                <h2 class="section-heading">Delivering Excellence <br>Across Sri Lanka</h2>
+                <p class="section-subtitle" style="margin-bottom: 1.5rem;">Jayasooriya Transport is a professional transport fleet focused on reliable commercial transportation and precision logistics.</p>
+                <p class="section-subtitle">We bridge the gap between businesses and their destinations with a modern, well-maintained fleet capable of handling diverse logistical requirements.</p>
+
+                <div class="about-content-list">
+                    <div class="about-list-item">
+                        <div class="about-check-icon"><i data-lucide="check"></i></div>
+                        <div class="about-item-text">
+                            <strong>Reliable Fleet Operations</strong>
+                            <p>Regularly serviced, modern vehicles ensuring minimal downtime and maximum delivery efficiency.</p>
+                        </div>
+                    </div>
+                    <div class="about-list-item">
+                        <div class="about-check-icon"><i data-lucide="check"></i></div>
+                        <div class="about-item-text">
+                            <strong>Diverse Capabilities</strong>
+                            <p>From temperature-sensitive pharmaceutical distribution to heavy commercial bulk transport.</p>
+                        </div>
+                    </div>
+                    <div class="about-list-item">
+                        <div class="about-check-icon"><i data-lucide="check"></i></div>
+                        <div class="about-item-text">
+                            <strong>Customer-Focused Service</strong>
+                            <p>Dedicated support and transparent communication for every dispatch.</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="#services" class="btn btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section class="services-section" id="services">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Our Services</div>
+                <h2 class="section-heading">Comprehensive <span class="text-gradient">Transport Solutions</span></h2>
+                <p class="section-subtitle">Tailored logistical support utilizing our specialized vehicle fleet to meet exact commercial requirements.</p>
+            </div>
+
+            <div class="services-grid">
+                <!-- Refrigerated -->
+                <div class="service-card cyan">
+                    <div class="service-icon-box"><i data-lucide="snowflake"></i></div>
+                    <h3 class="service-title">Refrigerated Transport</h3>
+                    <p class="service-desc">Temperature-controlled transportation for products requiring strict refrigerated or sub-zero conditions throughout transit.</p>
+                </div>
+                <!-- General -->
+                <div class="service-card">
+                    <div class="service-icon-box"><i data-lucide="package"></i></div>
+                    <h3 class="service-title">General Transport</h3>
+                    <p class="service-desc">Reliable and secure transportation using our sealed aluminum-body commercial vehicles for dry goods.</p>
+                </div>
+                <!-- Fleet -->
+                <div class="service-card">
+                    <div class="service-icon-box"><i data-lucide="truck"></i></div>
+                    <h3 class="service-title">Fleet Transportation</h3>
+                    <p class="service-desc">Flexible fleet scaling solutions for commercial distribution, manufacturing logistics, and supply chain operations.</p>
+                </div>
+                <!-- Distribution -->
+                <div class="service-card">
+                    <div class="service-icon-box"><i data-lucide="map-pin"></i></div>
+                    <h3 class="service-title">Distribution Support</h3>
+                    <p class="service-desc">Dedicated transportation support for structured business-to-business (B2B) distribution networks island-wide.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FLEET EXPLORER SECTION (CORE) -->
+    <section class="fleet-section" id="fleet">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-tag">Fleet Explorer</div>
+                <h2 class="section-heading">Explore Our <span class="text-gradient">Vehicles</span></h2>
+                <p class="section-subtitle">Browse our diverse catalog of commercial vehicles, inspect real photographs, and review detailed specifications.</p>
+            </div>
+
+            <!-- Fleet Controls -->
+            <div class="fleet-controls">
+                <div class="fleet-filters" id="fleetFilters">
+                    <button class="filter-btn active" data-filter="all">All Vehicles</button>
+                    <button class="filter-btn" data-filter="freezer">Freezer Trucks</button>
+                    <button class="filter-btn" data-filter="aluminum">Aluminum Body</button>
+                    <button class="filter-btn" data-filter="status-active">Active / Available</button>
+                    <button class="filter-btn" data-filter="status-operation">In Operation</button>
+                </div>
+                <div class="fleet-search-box">
+                    <i data-lucide="search" class="fleet-search-icon"></i>
+                    <input type="text" class="fleet-search-input" id="fleetSearchInput" placeholder="Search by vehicle ID, name...">
+                </div>
+            </div>
+
+            <!-- Fleet Grid -->
+            <div class="fleet-grid" id="fleetGrid">
+                <!-- Vehicle Cards will be dynamically injected here by fleet.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section class="why-us-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-heading">Why <span class="text-gradient">Jayasooriya Transport?</span></h2>
+            </div>
+            <div class="why-grid">
+                <div class="why-card">
+                    <i data-lucide="shield" class="why-icon"></i>
+                    <h3 class="why-title">Reliable Fleet</h3>
+                    <p class="why-desc">A highly maintained diverse fleet specifically designed for continuous commercial transportation operations.</p>
+                </div>
+                <div class="why-card">
+                    <i data-lucide="settings" class="why-icon"></i>
+                    <h3 class="why-title">Modern Capability</h3>
+                    <p class="why-desc">Technologically capable vehicles suited for complex and sensitive transportation requirements.</p>
+                </div>
+                <div class="why-card">
+                    <i data-lucide="git-merge" class="why-icon"></i>
+                    <h3 class="why-title">Flexible Solutions</h3>
+                    <p class="why-desc">Adaptable transportation models catering to different business sizes and seasonal operational needs.</p>
+                </div>
+                <div class="why-card">
+                    <i data-lucide="users" class="why-icon"></i>
+                    <h3 class="why-title">Customer Focus</h3>
+                    <p class="why-desc">Professional service focused on dependable delivery, clear communication, and operational transparency.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="cta-banner-section">
+        <div class="container">
+            <div class="cta-box">
+                <h2 class="cta-title">Need Reliable Transport?</h2>
+                <p class="cta-desc">Let's move your business forward. Request a quote or inquire about our fleet availability today.</p>
+                <div class="cta-buttons">
+                    <a href="#contact" class="btn btn-primary">Contact Us</a>
+                    <a href="#fleet" class="btn btn-secondary">Explore Fleet</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT & LOCATION SECTION -->
+    <section class="contact-section" id="contact">
+        <div class="container contact-grid">
+            
+            <div class="contact-info-panel">
+                <div>
+                    <div class="section-tag">Get in Touch</div>
+                    <h2 class="section-heading">Contact <span class="text-gradient">Information</span></h2>
+                    <p class="section-subtitle">Reach out to us for service inquiries, fleet availability, or general questions.</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon"><i data-lucide="map-pin"></i></div>
+                    <div class="info-details">
+                        <h4>Head Office</h4>
+                        <p>Colombo, Sri Lanka<br>(Demo Location Data)</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon"><i data-lucide="phone"></i></div>
+                    <div class="info-details">
+                        <h4>Contact Numbers</h4>
+                        <p>+94 XX XXX XXXX</p>
+                        <p>WhatsApp: +94 XX XXX XXXX</p>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon"><i data-lucide="mail"></i></div>
+                    <div class="info-details">
+                        <h4>Email Address</h4>
+                        <a href="mailto:info@jayasooriyatransport.com">info@jayasooriyatransport.com</a>
+                    </div>
+                </div>
+
+                <!-- Google Maps Placeholder -->
+                <div class="map-placeholder-box">
+                    <div style="color:var(--text-subtle); display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+                        <i data-lucide="map" style="font-size: 2rem;"></i>
+                        <span>Google Maps Embed Placeholder</span>
+                    </div>
+                    <!-- Replace with real iframe when available -->
+                    <!-- <iframe src="MAPS_URL" allowfullscreen="" loading="lazy"></iframe> -->
+                </div>
+            </div>
+
+            <div class="contact-form-card">
+                <h3 style="font-size: 1.5rem; margin-bottom: 2rem;">Send an Inquiry</h3>
+                <form id="contactForm">
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Company (Optional)</label>
+                            <input type="text" class="form-control" placeholder="Business Name">
+                        </div>
+                    </div>
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" required placeholder="+94 7X XXX XXXX">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" required placeholder="john@example.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Service Required</label>
+                        <select class="form-control" id="serviceSelect" required>
+                            <option value="" disabled selected>Select a service or vehicle inquiry</option>
+                            <option value="refrigerated">Refrigerated Transport</option>
+                            <option value="general">General Cargo Transport</option>
+                            <option value="fleet">Fleet Logistics</option>
+                            <option value="specific_vehicle" id="specificVehicleOption">Inquire about specific vehicle</option>
+                            <option value="other">Other Inquiry</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="vehicleIdGroup" style="display: none;">
+                        <label class="form-label">Vehicle ID</label>
+                        <input type="text" class="form-control" id="inquiryVehicleId" readonly style="background: var(--dark-bg); color: var(--primary);">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-control" required placeholder="Tell us about your transport requirements..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Send Inquiry <i data-lucide="send"></i></button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="brand-logo" style="display:flex; align-items:center; gap:0.75rem;">
+                        <img src="https://i.postimg.cc/DZT2hQGy/New-Logo-White-BG.png" alt="JT Logo" class="brand-logo-img" style="height: 60px;">
+                        <div class="brand-title" style="display:flex; flex-direction:column; font-family:var(--font-heading); font-size:1.2rem; font-weight:800; line-height:1.1; letter-spacing:0.5px;">
+                            <span style="color: var(--primary);">JAYASOORIYA</span>
+                            <span style="color: var(--secondary);">TRANSPORT</span>
+                        </div>
+                    </div>
+                    <p>Providing exceptional commercial transportation, fleet logistics, and specialized refrigerated delivery solutions across Sri Lanka.</p>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#fleet">Our Fleet</a></li>
+                        <li><a href="admin/index.html">Admin Panel</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="#services">Refrigerated Transport</a></li>
+                        <li><a href="#services">General Transport</a></li>
+                        <li><a href="#services">Fleet Logistics</a></li>
+                        <li><a href="#services">Distribution</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Contact</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:info@jayasooriyatransport.com">info@jayasooriyatransport.com</a></li>
+                        <li><a href="#">+94 XX XXX XXXX</a></li>
+                        <li><a href="#">Colombo, Sri Lanka</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Jayasooriya Transport. All rights reserved.</p>
+                <div style="display:flex; gap: 1rem;">
+                    <a href="#" aria-label="Facebook"><i data-lucide="facebook" style="width: 20px;"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i data-lucide="linkedin" style="width: 20px;"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- VEHICLE DETAIL MODAL (Injected/managed by fleet.js) -->
+    <div class="modal-backdrop" id="vehicleModal">
+        <div class="modal-dialog">
+            <button class="modal-close-btn" id="closeVehicleModal" aria-label="Close modal">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="modal-content-grid" id="modalContent">
+                <!-- Content dynamically injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX MODAL (For full screen image view) -->
+    <div class="lightbox-modal" id="lightboxModal">
+        <button class="lightbox-close" id="lightboxClose"><i data-lucide="x"></i></button>
+        <img src="" alt="Full Screen" class="lightbox-img" id="lightboxImage">
+        <button class="gallery-nav-btn gallery-prev" id="lightboxPrev"><i data-lucide="chevron-left"></i></button>
+        <button class="gallery-nav-btn gallery-next" id="lightboxNext"><i data-lucide="chevron-right"></i></button>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast-notification" id="toastBox">
+        <i data-lucide="check-circle" style="color: var(--status-active);"></i>
+        <div>
+            <strong style="display:block; font-size: 0.95rem;">Success</strong>
+            <span style="font-size: 0.85rem; color: var(--text-muted);" id="toastMessage">Your message has been sent.</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/fleet-data.js"></script>
+    <script src="js/fleet.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
