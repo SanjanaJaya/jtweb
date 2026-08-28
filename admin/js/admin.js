@@ -41,7 +41,82 @@ document.addEventListener('DOMContentLoaded', () => {
     const sEngine = document.getElementById('sEngine');
     const sPayload = document.getElementById('sPayload');
     const sFreezer = document.getElementById('sFreezer');
-    const vImages = document.getElementById('vImages');
+    const sFuel = document.getElementById('sFuel');
+    const sWheels = document.getElementById('sWheels');
+    
+    const imageUrlsContainer = document.getElementById('imageUrlsContainer');
+    const addImageUrlBtn = document.getElementById('addImageUrlBtn');
+
+    /**
+     * Dynamic Image Link Builder
+     */
+    function createImageUrlRow(url = '') {
+        const row = document.createElement('div');
+        row.className = 'image-url-row';
+        row.style.cssText = 'display: flex; align-items: center; gap: 8px; margin-bottom: 4px;';
+        
+        row.innerHTML = `
+            <div style="width: 42px; height: 42px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-dark); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative;">
+                <img class="img-preview" src="${url || ''}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" onload="this.style.display='block'; if(this.nextElementSibling) this.nextElementSibling.style.display='none';" style="width:100%; height:100%; object-fit:cover; display:${url ? 'block' : 'none'};">
+                <div class="img-fallback" style="display:${url ? 'none' : 'flex'}; align-items:center; justify-content:center; width:100%; height:100%; color:var(--text-muted);">
+                    <i data-lucide="image" style="width:18px; height:18px;"></i>
+                </div>
+            </div>
+            <input type="url" class="form-control image-url-input" value="${url}" placeholder="https://i.postimg.cc/..." style="flex: 1;">
+            <button type="button" class="btn btn-danger remove-img-btn" style="padding: 8px 12px; border-radius: var(--radius-sm);" title="Remove Image">
+                <i data-lucide="trash-2" style="width:16px; height:16px;"></i>
+            </button>
+        `;
+
+        const input = row.querySelector('.image-url-input');
+        const imgPreview = row.querySelector('.img-preview');
+        const imgFallback = row.querySelector('.img-fallback');
+        const removeBtn = row.querySelector('.remove-img-btn');
+
+        input.addEventListener('input', () => {
+            const val = input.value.trim();
+            if (val) {
+                imgPreview.src = val;
+            } else {
+                imgPreview.style.display = 'none';
+                if (imgFallback) imgFallback.style.display = 'flex';
+            }
+        });
+
+        removeBtn.addEventListener('click', () => {
+            const allRows = imageUrlsContainer.querySelectorAll('.image-url-row');
+            if (allRows.length > 1) {
+                row.remove();
+            } else {
+                input.value = '';
+                imgPreview.style.display = 'none';
+                if (imgFallback) imgFallback.style.display = 'flex';
+            }
+        });
+
+        return row;
+    }
+
+    function renderImageUrlInputs(urlsArray = []) {
+        if (!imageUrlsContainer) return;
+        imageUrlsContainer.innerHTML = '';
+        const list = (Array.isArray(urlsArray) && urlsArray.length > 0) ? urlsArray : [''];
+        list.forEach(url => {
+            imageUrlsContainer.appendChild(createImageUrlRow(url));
+        });
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    if (addImageUrlBtn) {
+        addImageUrlBtn.addEventListener('click', () => {
+            const newRow = createImageUrlRow('');
+            imageUrlsContainer.appendChild(newRow);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            const newInputs = imageUrlsContainer.querySelectorAll('.image-url-input');
+            const lastInput = newInputs[newInputs.length - 1];
+            if (lastInput) lastInput.focus();
+        });
+    }
 
     /**
      * Render Dashboard
@@ -144,8 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
             modalTitle.innerText = "Add New Vehicle";
             editModeIndex.value = -1;
             vehicleForm.reset();
-            // Default images placeholder
-            vImages.value = "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80";
+            if (sWheels) sWheels.value = "6 Nut Heavy Duty";
+            renderImageUrlInputs(["https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80"]);
         } else {
             // Edit Mode
             modalTitle.innerText = "Edit Vehicle";
@@ -158,12 +233,14 @@ document.addEventListener('DOMContentLoaded', () => {
             vStatus.value = v.status;
             vDesc.value = v.description;
             
-            sLength.value = v.specifications.bodyLength || '';
-            sEngine.value = v.specifications.engine || '';
-            sPayload.value = v.specifications.payloadCapacity || '';
-            sFreezer.value = v.specifications.freezer || '';
+            sLength.value = v.specifications ? (v.specifications.bodyLength || '') : '';
+            sEngine.value = v.specifications ? (v.specifications.engine || '') : '';
+            sPayload.value = v.specifications ? (v.specifications.payloadCapacity || '') : '';
+            sFreezer.value = v.specifications ? (v.specifications.freezer || '') : '';
+            if (sFuel) sFuel.value = v.specifications ? (v.specifications.fuelType || 'Diesel') : 'Diesel';
+            if (sWheels) sWheels.value = v.specifications ? (v.specifications.wheels || '6 Nut Heavy Duty') : '6 Nut Heavy Duty';
             
-            vImages.value = v.images ? v.images.join(', ') : '';
+            renderImageUrlInputs(v.images || []);
         }
         
         adminModal.classList.add('active');
@@ -180,8 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
     vehicleForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        // Parse Images
-        let imgArray = vImages.value.split(',').map(i => i.trim()).filter(i => i.length > 0);
+        // Parse Images from Dynamic Inputs
+        const imgInputs = document.querySelectorAll('.image-url-input');
+        let imgArray = Array.from(imgInputs).map(i => i.value.trim()).filter(i => i.length > 0);
         if (imgArray.length === 0) {
             imgArray = ["https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80"];
         }
@@ -213,8 +291,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 bodyLength: formattedLength || '14.5 ft',
                 bodyType: vCategory.value === 'freezer' ? 'Refrigerated Box' : 'Aluminum Container',
                 engine: sEngine.value,
-                wheels: "6 Nut Heavy Duty",
-                fuelType: "Diesel",
+                wheels: (sWheels && sWheels.value.trim()) ? sWheels.value.trim() : '6 Nut Heavy Duty',
+                fuelType: sFuel ? sFuel.value : 'Diesel',
                 freezer: formattedFreezer || 'Sub-Zero (-20°C to +15°C)',
                 payloadCapacity: formattedPayload || '4.5 Tons'
             }

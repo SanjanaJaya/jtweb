@@ -204,14 +204,31 @@
                             <label>Freezer Unit Temp (°C)</label>
                             <input type="text" id="sFreezer" class="form-control" required placeholder="e.g. -20°C to +15°C (or N/A)">
                         </div>
+                        <div class="form-group">
+                            <label>Fuel Type</label>
+                            <select id="sFuel" class="form-control" required>
+                                <option value="Diesel">Diesel</option>
+                                <option value="Petrol">Petrol</option>
+                                <option value="Electric">Electric</option>
+                                <option value="Hybrid">Hybrid</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Wheels Configuration</label>
+                            <input type="text" id="sWheels" class="form-control" required placeholder="e.g. 6 Nut Heavy Duty">
+                        </div>
                     </div>
 
-                    <h4 style="margin: 1.5rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);">Vehicle Images</h4>
-                    <div class="form-group">
-                        <label>Image URLs (Comma separated)</label>
-                        <textarea id="vImages" class="form-control" rows="2" placeholder="https://..., https://..."></textarea>
-                        <small style="color: #64748b; margin-top: 0.5rem; display:block;">For demo, paste external image URLs separated by commas.</small>
+                    <h4 style="margin: 1.5rem 0 1rem 0; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                        <span>Vehicle Images</span>
+                        <button type="button" class="btn btn-outline" id="addImageUrlBtn" style="padding: 4px 12px; font-size: 13px;">
+                            <i data-lucide="plus"></i> Add Image Link
+                        </button>
+                    </h4>
+                    <div id="imageUrlsContainer" style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Injected by JS -->
                     </div>
+                    <small style="color: #64748b; margin-top: 0.5rem; display:block;">Paste external image URLs above. Click <strong>+ Add Image Link</strong> to add more images.</small>
 
                 </form>
             </div>
