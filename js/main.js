@@ -147,6 +147,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- NEXT-GEN SCROLL REVEAL OBSERVER ENGINE ---
+    const revealObserverOptions = {
+        root: null,
+        rootMargin: '0px 0px -60px 0px',
+        threshold: 0.12
+    };
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const delay = el.getAttribute('data-delay');
+                if (delay) {
+                    setTimeout(() => {
+                        el.classList.add('active');
+                    }, parseInt(delay, 10));
+                } else {
+                    el.classList.add('active');
+                }
+                observer.unobserve(el);
+            }
+        });
+    }, revealObserverOptions);
+
+    window.initScrollReveal = function(targetScope) {
+        const root = targetScope || document;
+        const elements = root.querySelectorAll('.reveal, .reveal-up, .reveal-down, .reveal-left, .reveal-right, .reveal-zoom, .reveal-flip');
+        elements.forEach(el => {
+            if (!el.classList.contains('active')) {
+                revealObserver.observe(el);
+            }
+        });
+    };
+
+    // Run reveal observer initial pass
+    window.initScrollReveal();
+
 });
 
 /**

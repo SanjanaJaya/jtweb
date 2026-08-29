@@ -98,12 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Render Cards
-        filteredData.forEach(vehicle => {
+        filteredData.forEach((vehicle, idx) => {
             const statusClass = vehicle.status === 'active' ? 'status-active' : 'status-operation';
             const mainImg = vehicle.images && vehicle.images.length > 0 ? vehicle.images[0] : 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=800&q=80';
             
             const card = document.createElement('div');
-            card.className = 'vehicle-card';
+            card.className = 'vehicle-card reveal reveal-zoom';
+            const delayMs = (idx % 3) * 120;
+            card.setAttribute('data-delay', delayMs);
+
             card.innerHTML = `
                 <div class="vehicle-card-image-wrap">
                     <img src="${mainImg}" alt="${vehicle.name}" class="vehicle-card-img" loading="lazy">
@@ -129,6 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         lucide.createIcons();
+
+        // Trigger Scroll Reveal observer for dynamic grid cards
+        if (typeof window.initScrollReveal === 'function') {
+            window.initScrollReveal(fleetGrid);
+        }
 
         // Attach listeners to new buttons
         document.querySelectorAll('.view-vehicle-btn').forEach(btn => {
