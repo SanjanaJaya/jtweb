@@ -43,17 +43,18 @@ exports.handler = async function (event) {
     }
 
     try {
-        // Build the Neon HTTP API endpoint from the connection string
+        // Neon HTTP API: remove -pooler suffix from hostname for the HTTP endpoint
         const urlObj = new URL(connectionString);
         const host = urlObj.hostname.replace('-pooler', '');
-        const password = urlObj.password;
         const endpoint = `https://${host}/sql`;
 
+        // Neon's HTTP SQL API requires the full connection string in the
+        // 'Neon-Connection-String' header — NOT Authorization: Bearer
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${password}`
+                'Neon-Connection-String': connectionString
             },
             body: JSON.stringify({ query, params })
         });
@@ -61,7 +62,7 @@ exports.handler = async function (event) {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message || 'Neon query failed');
+            throw new Error(data.message || data.error || 'Neon query failed');
         }
 
         return {
