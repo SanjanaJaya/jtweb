@@ -181,7 +181,13 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `).join('');
 
-        let specsHtml = Object.entries(vehicle.specifications || {}).map(([key, val]) => {
+        const specs = {
+            ...vehicle.specifications,
+            gpsTracking: vehicle.specifications?.gpsTracking || '100% Live Monitored',
+            crewHandling: vehicle.specifications?.crewHandling || 'Trained Driver & Coordinator'
+        };
+
+        let specsHtml = Object.entries(specs).map(([key, val]) => {
             let formattedVal = val ? String(val).trim() : '';
             
             // Enforce ft unit for Body Length
@@ -228,6 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 <h2 class="modal-vehicle-title">${vehicle.name}</h2>
                 <p class="modal-vehicle-desc">${vehicle.description}</p>
+
+                <div style="display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:1.25rem;">
+                    <span style="display:inline-flex; align-items:center; gap:0.4rem; background:rgba(16, 185, 129, 0.1); color:var(--status-active); font-size:0.8rem; font-weight:700; padding:0.35rem 0.8rem; border-radius:100px;">
+                        <i data-lucide="navigation" style="width:14px; height:14px;"></i> Live GPS Tracked
+                    </span>
+                    <span style="display:inline-flex; align-items:center; gap:0.4rem; background:var(--primary-glow); color:var(--primary); font-size:0.8rem; font-weight:700; padding:0.35rem 0.8rem; border-radius:100px;">
+                        <i data-lucide="user-check" style="width:14px; height:14px;"></i> Trained Driver & Coordinator
+                    </span>
+                </div>
                 
                 <div class="specs-grid-title"><i data-lucide="list"></i> Technical Specifications</div>
                 <div class="specs-grid-table">
