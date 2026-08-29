@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jayasooriya Transport | Transport & Logistics Sri Lanka</title>
     <meta name="description" content="Professional transport and logistics company in Sri Lanka, specializing in refrigerated freezer trucks and aluminum-body commercial transportation.">
+
+    <!-- Favicon / Web Icon -->
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/vHqSfWQH/Site-Logo.png">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/vHqSfWQH/Site-Logo.png">
+    <meta name="theme-color" content="#E50914">
     
     <link rel="stylesheet" href="css/style.css">
     
@@ -573,7 +578,11 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/config.js"></script>
+    <script>
+        // config.js is git-ignored (local dev only). On Netlify, the DB proxy handles credentials.
+        // This prevents a console 404 error on production.
+    </script>
+    <script src="js/config.js" onerror="console.info('config.js not found — using Netlify DB proxy.')"></script>
     <script src="js/neon-db.js"></script>
     <script src="js/fleet-data.js"></script>
     <script src="js/fleet.js"></script>

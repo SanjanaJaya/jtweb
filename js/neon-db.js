@@ -1,37 +1,63 @@
 /**
  * JAYASOORIYA TRANSPORT - NEON POSTGRES INTEGRATION
  * ==================================================
- * Direct Serverless HTTP Driver connection to Neon PostgreSQL database.
+ * On Netlify: queries are routed through /.netlify/functions/db (serverless proxy).
+ * Locally: queries go directly to Neon via window.NEON_CONNECTION_STRING from config.js.
+ *
+ * This keeps the database password out of the browser on production.
  */
 
 /**
- * Execute SQL Query against Neon via HTTP API
+ * Detect whether we are running on Netlify (production) or locally.
+ * On Netlify, window.NEON_CONNECTION_STRING won't be set, so we use the proxy.
+ */
+function isUsingProxy() {
+    return !window.NEON_CONNECTION_STRING ||
+        window.NEON_CONNECTION_STRING.includes('YOUR_NEON_CONNECTION_STRING_HERE');
+}
+
+/**
+ * Execute SQL Query — routes to Netlify proxy or direct Neon HTTP API.
  */
 async function queryNeon(sqlQuery, params = []) {
-    const connectionString = window.NEON_CONNECTION_STRING || "";
-    if (!connectionString || connectionString.includes("YOUR_NEON_CONNECTION_STRING_HERE")) {
-        console.warn("Neon Postgres connection string not configured. Set window.NEON_CONNECTION_STRING in js/config.js.");
-        return null;
+
+    // ── PRODUCTION PATH: use the Netlify serverless proxy ──────────────────
+    if (isUsingProxy()) {
+        try {
+            const response = await fetch('/.netlify/functions/db', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: sqlQuery, params })
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'Proxy query failed');
+            }
+
+            const data = await response.json();
+            return data.rows || data;
+        } catch (err) {
+            console.error('Neon Proxy Error:', err.message);
+            return null;
+        }
     }
 
+    // ── LOCAL DEV PATH: direct Neon HTTP API using config.js ───────────────
+    const connectionString = window.NEON_CONNECTION_STRING;
     try {
         const urlObj = new URL(connectionString);
-        // Strip -pooler for Neon's HTTP API endpoint
         const host = urlObj.hostname.replace('-pooler', '');
         const password = urlObj.password;
-        
         const endpoint = `https://${host}/sql`;
-        
+
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${password}`
             },
-            body: JSON.stringify({
-                query: sqlQuery,
-                params: params
-            })
+            body: JSON.stringify({ query: sqlQuery, params })
         });
 
         if (!response.ok) {
@@ -42,7 +68,7 @@ async function queryNeon(sqlQuery, params = []) {
         const data = await response.json();
         return data.rows || data;
     } catch (err) {
-        console.error("Neon DB Error:", err);
+        console.error('Neon DB Error:', err.message);
         return null;
     }
 }
@@ -53,7 +79,7 @@ async function queryNeon(sqlQuery, params = []) {
 async function fetchVehiclesFromNeon() {
     const rows = await queryNeon(`SELECT * FROM vehicles ORDER BY id ASC`);
     if (!rows || !Array.isArray(rows)) return null;
-    
+
     return rows.map(r => ({
         id: r.id,
         name: r.name,
@@ -125,7 +151,6 @@ async function sendInquiryToNeon(inquiryData) {
         inquiryData.vehicleId || null,
         inquiryData.message || ''
     ];
-    
     return await queryNeon(sql, params);
 }
 
@@ -135,7 +160,7 @@ async function sendInquiryToNeon(inquiryData) {
 async function fetchGalleryFromNeon() {
     const rows = await queryNeon(`SELECT * FROM fleet_gallery ORDER BY id DESC`);
     if (!rows || !Array.isArray(rows)) return null;
-    
+
     return rows.map(r => ({
         id: r.id ? String(r.id) : `gal-${Math.random()}`,
         url: r.url
@@ -151,17 +176,13 @@ async function saveGalleryItemToNeon(item) {
         VALUES ($1)
         RETURNING id;
     `;
-    const params = [
-        item.url
-    ];
-    return await queryNeon(sql, params);
+    return await queryNeon(sql, [item.url]);
 }
 
 /**
  * Delete a gallery photo item from Neon DB
  */
 async function deleteGalleryItemFromNeon(id) {
-    // If integer ID, delete by integer id
     if (!isNaN(id)) {
         return await queryNeon(`DELETE FROM fleet_gallery WHERE id = $1`, [parseInt(id, 10)]);
     } else {
@@ -171,7 +192,6 @@ async function deleteGalleryItemFromNeon(id) {
 
 // Export to window
 if (typeof window !== 'undefined') {
-    window.NEON_CONNECTION_STRING = NEON_CONNECTION_STRING;
     window.queryNeon = queryNeon;
     window.fetchVehiclesFromNeon = fetchVehiclesFromNeon;
     window.saveVehicleToNeon = saveVehicleToNeon;
@@ -181,4 +201,3 @@ if (typeof window !== 'undefined') {
     window.saveGalleryItemToNeon = saveGalleryItemToNeon;
     window.deleteGalleryItemFromNeon = deleteGalleryItemFromNeon;
 }
-
