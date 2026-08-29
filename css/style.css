@@ -1778,21 +1778,44 @@ textarea.form-control {
         max-width: 340px;
         justify-content: center;
     }
-    /* ===== HERO HIGHLIGHTS — centered items ===== */
+    /* ===== HERO HIGHLIGHTS — floating pill badges on mobile ===== */
     .hero-highlights {
-        flex-direction: column;
-        gap: 0.9rem;
-        padding: 1.5rem 1.25rem;
-        border-radius: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.55rem;
+        /* dissolve the outer box */
+        background: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
         width: 100%;
         margin: 0;
-        align-items: center;
     }
     .highlight-item {
-        font-size: 0.95rem;
-        width: 100%;
+        /* each item becomes its own pill */
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: 100px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        padding: 0.5rem 1rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        gap: 0.45rem;
+        flex-direction: row;
+        align-items: center;
         justify-content: center;
-        text-align: center;
+        white-space: nowrap;
+    }
+    .highlight-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
     }
 
     /* ===== STATS BAR ===== */
