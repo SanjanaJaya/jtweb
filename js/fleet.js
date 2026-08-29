@@ -45,10 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof window.fetchVehiclesFromNeon === 'function') {
             try {
                 const neonVehicles = await window.fetchVehiclesFromNeon();
-                if (neonVehicles && neonVehicles.length > 0) {
+                if (Array.isArray(neonVehicles)) {
                     currentFleetData = neonVehicles;
+                    if (typeof window.saveFleetData === 'function') {
+                        window.saveFleetData(neonVehicles);
+                    }
                     renderFleet();
-                    console.log("Loaded live fleet data from Neon Postgres!");
+                    console.log("Synced live fleet data from Neon Postgres (" + neonVehicles.length + " vehicles).");
                 }
             } catch (e) {
                 console.warn("Could not fetch from Neon DB, using default data.", e);
@@ -345,11 +348,117 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Init
+    /**
+     * FLEET PHOTO GALLERY & MASONRY COLLAGE CONTROLLER
+     */
+    const homeGalleryGrid = document.getElementById('homeGalleryGrid');
+    const fullGalleryGrid = document.getElementById('fullGalleryGrid');
+
+    let allGalleryItems = [];
+
+    async function initGallery() {
+        if (!homeGalleryGrid && !fullGalleryGrid) return;
+
+        // 1. Gather standalone gallery items (local cache)
+        let standaloneGallery = typeof window.getGalleryData === 'function' ? window.getGalleryData() : [];
+
+        const uniqueUrls = new Set();
+        allGalleryItems = standaloneGallery.filter(item => {
+            if (!item.url || uniqueUrls.has(item.url)) return false;
+            uniqueUrls.add(item.url);
+            return true;
+        });
+
+        // 2. Fetch live gallery items from Neon DB if available
+        if (typeof window.fetchGalleryFromNeon === 'function') {
+            try {
+                const neonGallery = await window.fetchGalleryFromNeon();
+                if (Array.isArray(neonGallery)) {
+                    const dbUrls = new Set();
+                    allGalleryItems = neonGallery.filter(item => {
+                        if (!item.url || dbUrls.has(item.url)) return false;
+                        dbUrls.add(item.url);
+                        return true;
+                    });
+                    // Sync local cache with DB state
+                    if (typeof window.saveGalleryData === 'function') {
+                        window.saveGalleryData(neonGallery);
+                    }
+                }
+            } catch (e) {
+                console.warn("Could not fetch gallery from Neon DB:", e);
+            }
+        }
+
+        renderGalleryCollage();
+    }
+
+    function renderGalleryCollage() {
+        // Render Homepage Preview (limit to 6 photos)
+        if (homeGalleryGrid) {
+            const previewItems = allGalleryItems.slice(0, 6);
+            renderGridContainer(homeGalleryGrid, previewItems);
+        }
+
+        // Render Full Gallery Page (all photos)
+        if (fullGalleryGrid) {
+            renderGridContainer(fullGalleryGrid, allGalleryItems);
+        }
+    }
+
+    function renderGridContainer(container, items) {
+        if (!container) return;
+        container.innerHTML = '';
+
+        if (items.length === 0) {
+            container.innerHTML = `
+                <div class="empty-fleet-state" style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem;">
+                    <i data-lucide="image" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                    <h3>No Photos Available</h3>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">Upload new vehicle photos from the Admin Panel.</p>
+                </div>
+            `;
+            lucide.createIcons();
+            return;
+        }
+
+        items.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'collage-item reveal reveal-zoom';
+            card.setAttribute('data-delay', (idx % 4) * 80);
+
+            card.innerHTML = `
+                <img src="${item.url}" alt="Jayasooriya Fleet Lorry Photo" class="collage-img" loading="lazy">
+                <div class="collage-hover-overlay">
+                    <div class="collage-zoom-icon">
+                        <i data-lucide="maximize-2"></i>
+                    </div>
+                </div>
+            `;
+            
+            // Open Lightbox on click
+            card.addEventListener('click', () => {
+                currentGalleryImages = items.map(i => i.url);
+                openLightbox(idx);
+            });
+
+            container.appendChild(card);
+        });
+
+        lucide.createIcons();
+
+        if (typeof window.initScrollReveal === 'function') {
+            window.initScrollReveal(container);
+        }
+    }
+
+    // Init Fleet & Gallery
     initFleet();
+    initGallery();
 
     // Listen for custom event from admin panel updates
     window.addEventListener('fleetDataUpdated', () => {
         initFleet();
+        initGallery();
     });
 });

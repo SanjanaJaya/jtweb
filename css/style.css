@@ -2359,4 +2359,121 @@ textarea.form-control {
     }
 }
 
+/* ==========================================================================
+   FLEET PHOTO GALLERY COLLAGE STYLES (16:9, 9:16 PORTRAIT & 1:1 SQUARE)
+   ========================================================================== */
+.gallery-section {
+    padding: 7rem 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.collage-masonry {
+    column-count: 3;
+    column-gap: 1.5rem;
+    width: 100%;
+}
+
+.collage-item {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    transition: var(--transition-normal);
+    cursor: pointer;
+    background: #0F172A;
+    display: inline-block;
+    width: 100%;
+}
+
+.collage-item:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-card);
+    border-color: rgba(229, 9, 20, 0.4);
+}
+
+.collage-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.collage-item:hover .collage-img {
+    transform: scale(1.06);
+}
+
+.collage-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collage-item:hover .collage-hover-overlay {
+    opacity: 1;
+}
+
+.collage-zoom-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: var(--shadow-glow);
+    transform: scale(0.8);
+    transition: transform 0.3s ease;
+}
+
+.collage-item:hover .collage-zoom-icon {
+    transform: scale(1);
+}
+
+@media (max-width: 992px) {
+    .collage-masonry {
+        column-count: 2;
+        column-gap: 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .gallery-section {
+        padding: 4rem 0;
+    }
+    .collage-masonry {
+        column-count: 1;
+    }
+    .collage-item {
+        margin-bottom: 1.25rem;
+    }
+    .collage-hover-overlay {
+        opacity: 1;
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.5) 0%, rgba(0,0,0,0) 60%);
+        align-items: flex-end;
+        justify-content: flex-end;
+        padding: 1rem;
+    }
+    .collage-zoom-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+        transform: scale(1);
+    }
+}
+
+
 

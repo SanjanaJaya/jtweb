@@ -52,7 +52,7 @@ async function queryNeon(sqlQuery, params = []) {
  */
 async function fetchVehiclesFromNeon() {
     const rows = await queryNeon(`SELECT * FROM vehicles ORDER BY id ASC`);
-    if (!rows || !Array.isArray(rows) || rows.length === 0) return null;
+    if (!rows || !Array.isArray(rows)) return null;
     
     return rows.map(r => ({
         id: r.id,
@@ -129,6 +129,46 @@ async function sendInquiryToNeon(inquiryData) {
     return await queryNeon(sql, params);
 }
 
+/**
+ * Fetch all gallery photos from Neon DB
+ */
+async function fetchGalleryFromNeon() {
+    const rows = await queryNeon(`SELECT * FROM fleet_gallery ORDER BY id DESC`);
+    if (!rows || !Array.isArray(rows)) return null;
+    
+    return rows.map(r => ({
+        id: r.id ? String(r.id) : `gal-${Math.random()}`,
+        url: r.url
+    }));
+}
+
+/**
+ * Save or insert gallery photo item in Neon DB
+ */
+async function saveGalleryItemToNeon(item) {
+    const sql = `
+        INSERT INTO fleet_gallery (url)
+        VALUES ($1)
+        RETURNING id;
+    `;
+    const params = [
+        item.url
+    ];
+    return await queryNeon(sql, params);
+}
+
+/**
+ * Delete a gallery photo item from Neon DB
+ */
+async function deleteGalleryItemFromNeon(id) {
+    // If integer ID, delete by integer id
+    if (!isNaN(id)) {
+        return await queryNeon(`DELETE FROM fleet_gallery WHERE id = $1`, [parseInt(id, 10)]);
+    } else {
+        return await queryNeon(`DELETE FROM fleet_gallery WHERE url = $1`, [id]);
+    }
+}
+
 // Export to window
 if (typeof window !== 'undefined') {
     window.NEON_CONNECTION_STRING = NEON_CONNECTION_STRING;
@@ -137,4 +177,8 @@ if (typeof window !== 'undefined') {
     window.saveVehicleToNeon = saveVehicleToNeon;
     window.deleteVehicleFromNeon = deleteVehicleFromNeon;
     window.sendInquiryToNeon = sendInquiryToNeon;
+    window.fetchGalleryFromNeon = fetchGalleryFromNeon;
+    window.saveGalleryItemToNeon = saveGalleryItemToNeon;
+    window.deleteGalleryItemFromNeon = deleteGalleryItemFromNeon;
 }
+

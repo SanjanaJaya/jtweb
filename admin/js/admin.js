@@ -346,15 +346,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * TAB NAVIGATION & INQUIRIES LOGIC
+     * TAB NAVIGATION & INQUIRIES & GALLERY LOGIC
      */
     const navItems = document.querySelectorAll('.sidebar-nav .nav-item[data-tab]');
     const fleetTabContent = document.getElementById('fleetTabContent');
     const inquiriesTabContent = document.getElementById('inquiriesTabContent');
+    const galleryTabContent = document.getElementById('galleryTabContent');
+    
     const topbarTitle = document.getElementById('topbarTitle');
     const topbarActions = document.getElementById('topbarActions');
+    const addVehicleBtnEl = document.getElementById('addVehicleBtn');
+    const addGalleryPhotoBtn = document.getElementById('addGalleryPhotoBtn');
+
     const inquiriesTableBody = document.getElementById('inquiriesTableBody');
     const refreshInquiriesBtn = document.getElementById('refreshInquiriesBtn');
+
+    const galleryTableBody = document.getElementById('galleryTableBody');
+    const openAddGalleryModalBtn = document.getElementById('openAddGalleryModalBtn');
+    const galleryModal = document.getElementById('galleryModal');
+    const closeGalleryModalBtn = document.getElementById('closeGalleryModalBtn');
+    const cancelGalleryModalBtn = document.getElementById('cancelGalleryModalBtn');
+    const galleryForm = document.getElementById('galleryForm');
+    const gTitle = document.getElementById('gTitle');
+    const gUrl = document.getElementById('gUrl');
+    const gCategory = document.getElementById('gCategory');
+    const gVehicleId = document.getElementById('gVehicleId');
+
+    let galleryData = typeof window.getGalleryData === 'function' ? window.getGalleryData() : [];
 
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
@@ -368,15 +386,27 @@ document.addEventListener('DOMContentLoaded', () => {
             // Switch Views
             if (targetTab === 'inquiries') {
                 if (fleetTabContent) fleetTabContent.style.display = 'none';
+                if (galleryTabContent) galleryTabContent.style.display = 'none';
                 if (inquiriesTabContent) inquiriesTabContent.style.display = 'block';
                 if (topbarTitle) topbarTitle.innerText = 'Customer Quote Inquiries';
-                if (topbarActions) topbarActions.style.display = 'none';
+                if (addVehicleBtnEl) addVehicleBtnEl.style.display = 'none';
+                if (addGalleryPhotoBtn) addGalleryPhotoBtn.style.display = 'none';
                 renderInquiries();
+            } else if (targetTab === 'gallery') {
+                if (fleetTabContent) fleetTabContent.style.display = 'none';
+                if (inquiriesTabContent) inquiriesTabContent.style.display = 'none';
+                if (galleryTabContent) galleryTabContent.style.display = 'block';
+                if (topbarTitle) topbarTitle.innerText = 'Fleet Photo Gallery';
+                if (addVehicleBtnEl) addVehicleBtnEl.style.display = 'none';
+                if (addGalleryPhotoBtn) addGalleryPhotoBtn.style.display = 'inline-flex';
+                renderGalleryAdmin();
             } else {
                 if (fleetTabContent) fleetTabContent.style.display = 'block';
                 if (inquiriesTabContent) inquiriesTabContent.style.display = 'none';
+                if (galleryTabContent) galleryTabContent.style.display = 'none';
                 if (topbarTitle) topbarTitle.innerText = 'Fleet Management';
-                if (topbarActions) topbarActions.style.display = 'flex';
+                if (addVehicleBtnEl) addVehicleBtnEl.style.display = 'inline-flex';
+                if (addGalleryPhotoBtn) addGalleryPhotoBtn.style.display = 'none';
                 renderDashboard();
             }
 
@@ -384,6 +414,122 @@ document.addEventListener('DOMContentLoaded', () => {
             closeSidebar();
         });
     });
+
+    /**
+     * Render Fleet Gallery Table
+     */
+    async function renderGalleryAdmin() {
+        if (!galleryTableBody) return;
+
+        galleryData = typeof window.getGalleryData === 'function' ? window.getGalleryData() : [];
+
+        // Fetch live from Neon DB if available
+        if (typeof window.fetchGalleryFromNeon === 'function') {
+            try {
+                const neonGallery = await window.fetchGalleryFromNeon();
+                if (neonGallery && neonGallery.length > 0) {
+                    galleryData = neonGallery;
+                }
+            } catch (e) {
+                console.warn("Could not fetch gallery from Neon DB:", e);
+            }
+        }
+
+        galleryTableBody.innerHTML = '';
+        if (galleryData.length === 0) {
+            galleryTableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding: 2rem; color: var(--text-muted);">No photos in gallery. Click + Add Photo to upload.</td></tr>`;
+            return;
+        }
+
+        galleryData.forEach((photo, idx) => {
+            const tr = document.createElement('tr');
+            
+            tr.innerHTML = `
+                <td>
+                    <img src="${photo.url}" alt="Fleet Photo" style="width:60px; height:42px; object-fit:cover; border-radius:6px; border:1px solid var(--border);">
+                </td>
+                <td style="max-width:350px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"><a href="${photo.url}" target="_blank" style="color:var(--primary); font-size:13px; font-weight:600;">${photo.url}</a></td>
+                <td class="text-right">
+                    <button class="btn btn-danger delete-gal-btn" data-id="${photo.id || idx}" data-url="${photo.url}" style="padding: 4px 8px;"><i data-lucide="trash-2"></i></button>
+                </td>
+            `;
+            galleryTableBody.appendChild(tr);
+        });
+
+        lucide.createIcons();
+
+        document.querySelectorAll('.delete-gal-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                if (confirm('Are you sure you want to remove this photo from the gallery?')) {
+                    const galId = e.currentTarget.getAttribute('data-id');
+                    const galUrl = e.currentTarget.getAttribute('data-url');
+
+                    galleryData = galleryData.filter(g => g.id !== galId && g.url !== galUrl);
+                    if (typeof window.saveGalleryData === 'function') {
+                        window.saveGalleryData(galleryData);
+                    }
+
+                    if (typeof window.deleteGalleryItemFromNeon === 'function') {
+                        try {
+                            await window.deleteGalleryItemFromNeon(galId || galUrl);
+                            console.log("Deleted gallery photo from Neon DB");
+                        } catch (err) {
+                            console.warn("Could not delete gallery item from Neon DB:", err);
+                        }
+                    }
+
+                    window.dispatchEvent(new Event('fleetDataUpdated'));
+                    renderGalleryAdmin();
+                }
+            });
+        });
+    }
+
+    /**
+     * Gallery Modal Handlers
+     */
+    function openGalleryModal() {
+        if (galleryForm) galleryForm.reset();
+        if (galleryModal) galleryModal.classList.add('active');
+    }
+
+    function closeGalleryModal() {
+        if (galleryModal) galleryModal.classList.remove('active');
+    }
+
+    if (openAddGalleryModalBtn) openAddGalleryModalBtn.addEventListener('click', openGalleryModal);
+    if (addGalleryPhotoBtn) addGalleryPhotoBtn.addEventListener('click', openGalleryModal);
+    if (closeGalleryModalBtn) closeGalleryModalBtn.addEventListener('click', closeGalleryModal);
+    if (cancelGalleryModalBtn) cancelGalleryModalBtn.addEventListener('click', closeGalleryModal);
+
+    if (galleryForm) {
+        galleryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newPhoto = {
+                id: `gal-${Date.now()}`,
+                url: gUrl.value.trim()
+            };
+
+            galleryData.unshift(newPhoto);
+            if (typeof window.saveGalleryData === 'function') {
+                window.saveGalleryData(galleryData);
+            }
+
+            if (typeof window.saveGalleryItemToNeon === 'function') {
+                try {
+                    await window.saveGalleryItemToNeon(newPhoto);
+                    console.log("Saved gallery photo to Neon DB!");
+                } catch (err) {
+                    console.warn("Could not save gallery photo to Neon DB:", err);
+                }
+            }
+
+            window.dispatchEvent(new Event('fleetDataUpdated'));
+            closeGalleryModal();
+            renderGalleryAdmin();
+        });
+    }
 
     /**
      * Render Customer Inquiries from Neon DB

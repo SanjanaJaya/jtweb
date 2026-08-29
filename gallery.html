@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet Photo Gallery | Jayasooriya Transport Sri Lanka</title>
+    <meta name="description" content="Explore the full photo gallery of Jayasooriya Transport lorries, freezer trucks, aluminum container vehicles, and commercial fleet operations.">
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="brand-logo" style="display:flex; align-items:center; gap:0.75rem; text-decoration:none;">
+                <img src="https://i.postimg.cc/vHqSfWQH/Site-Logo.png" alt="Jayasooriya Transport Logo" class="brand-logo-img" id="mainLogo">
+                <div class="brand-title" style="display:flex; flex-direction:column; font-family:var(--font-heading); font-size:1.1rem; font-weight:800; line-height:1.1; letter-spacing:0.5px;">
+                    <span style="color: var(--primary);">JAYASOORIYA</span>
+                    <span style="color: var(--secondary);">TRANSPORT</span>
+                </div>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html#home" class="nav-link">Home</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li><a href="index.html#fleet" class="nav-link">Fleet</a></li>
+                <li><a href="gallery.html" class="nav-link active">Gallery</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="index.html#contact" class="btn btn-primary">Request Service</a>
+                <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MOBILE DRAWER -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div>
+            <div class="drawer-header">
+                <div class="brand-logo" style="display:flex; align-items:center; gap:0.75rem;">
+                    <img src="https://i.postimg.cc/vHqSfWQH/Site-Logo.png" alt="JT Logo" class="brand-logo-img" style="height: 48px;">
+                    <div class="brand-title" style="display:flex; flex-direction:column; font-family:var(--font-heading); font-size:1rem; font-weight:800; line-height:1.1; letter-spacing:0.5px;">
+                        <span style="color: var(--primary);">JAYASOORIYA</span>
+                        <span style="color: var(--secondary);">TRANSPORT</span>
+                    </div>
+                </div>
+                <button class="mobile-toggle" id="closeDrawer" style="display:block;">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <ul class="drawer-menu">
+                <li><a href="index.html#home" class="drawer-link drawer-close-trigger">Home</a></li>
+                <li><a href="index.html#about" class="drawer-link drawer-close-trigger">About Us</a></li>
+                <li><a href="index.html#services" class="drawer-link drawer-close-trigger">Our Services</a></li>
+                <li><a href="index.html#fleet" class="drawer-link drawer-close-trigger">Vehicle Fleet</a></li>
+                <li><a href="gallery.html" class="drawer-link drawer-close-trigger active">Fleet Gallery</a></li>
+                <li><a href="index.html#contact" class="drawer-link drawer-close-trigger">Contact</a></li>
+                <li><a href="admin/index.html" class="drawer-link" style="color:var(--text-subtle); font-size:1rem; margin-top:2rem;">Admin Panel Demo</a></li>
+            </ul>
+        </div>
+        <a href="index.html#contact" class="btn btn-primary drawer-close-trigger" style="width: 100%;">Request Transport Service</a>
+    </div>
+
+    <!-- GALLERY PAGE HEADER -->
+    <section class="gallery-hero-section" style="padding-top: 170px; padding-bottom: 3rem; background: var(--bg-light); text-align: center;">
+        <div class="container">
+            <a href="index.html" class="section-tag reveal reveal-up" style="text-decoration:none;">
+                <i data-lucide="arrow-left" style="width:14px; height:14px;"></i> Back to Home
+            </a>
+            <h1 class="section-heading reveal reveal-up" data-delay="100">Fleet Photo <span class="text-gradient">Gallery</span></h1>
+            <p class="section-subtitle reveal reveal-up" data-delay="150" style="margin: 0 auto 2rem auto;">Explore the complete collection of real operational photographs and vector artworks of Jayasooriya Transport lorries across Sri Lanka.</p>
+        </div>
+    </section>
+
+    <!-- MAIN MASONRY COLLAGE SECTION -->
+    <section class="gallery-section" style="padding-top: 2rem;">
+        <div class="container">
+            <!-- Full Masonry Collage Grid -->
+            <div class="collage-masonry reveal reveal-up" id="fullGalleryGrid" data-delay="100">
+                <!-- Injected dynamically by fleet.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- LIGHTBOX MODAL -->
+    <div class="lightbox-modal" id="lightboxModal">
+        <button class="lightbox-close" id="lightboxClose"><i data-lucide="x"></i></button>
+        <img src="" alt="Full Screen" class="lightbox-img" id="lightboxImage">
+        <button class="gallery-nav-btn gallery-prev" id="lightboxPrev"><i data-lucide="chevron-left"></i></button>
+        <button class="gallery-nav-btn gallery-next" id="lightboxNext"><i data-lucide="chevron-right"></i></button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer reveal reveal-up">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand reveal reveal-up" data-delay="100">
+                    <a href="index.html" class="brand-logo" style="display:flex; align-items:center; gap:0.75rem; text-decoration:none;">
+                        <img src="https://i.postimg.cc/vHqSfWQH/Site-Logo.png" alt="JT Logo" class="brand-logo-img" style="height: 48px;">
+                        <div class="brand-title" style="display:flex; flex-direction:column; font-family:var(--font-heading); font-size:1.1rem; font-weight:800; line-height:1.1; letter-spacing:0.5px;">
+                            <span style="color: var(--primary);">JAYASOORIYA</span>
+                            <span style="color: #FFFFFF;">TRANSPORT</span>
+                        </div>
+                    </a>
+                    <p class="footer-brand-desc">Reliable commercial transport and cold-chain refrigerated distribution services across Sri Lanka.</p>
+                    <div class="footer-badges">
+                        <span class="footer-badge"><i data-lucide="navigation"></i> 100% GPS Covered</span>
+                        <span class="footer-badge"><i data-lucide="user-check"></i> Trained Drivers & Coordinators</span>
+                    </div>
+                </div>
+                
+                <div class="reveal reveal-up" data-delay="200">
+                    <h4 class="footer-title">Navigation</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#home"><i data-lucide="chevron-right"></i> Home</a></li>
+                        <li><a href="index.html#about"><i data-lucide="chevron-right"></i> About Us</a></li>
+                        <li><a href="index.html#services"><i data-lucide="chevron-right"></i> Services</a></li>
+                        <li><a href="index.html#fleet"><i data-lucide="chevron-right"></i> Fleet Explorer</a></li>
+                        <li><a href="gallery.html"><i data-lucide="chevron-right"></i> Photo Gallery</a></li>
+                        <li><a href="index.html#contact"><i data-lucide="chevron-right"></i> Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="reveal reveal-up" data-delay="300">
+                    <h4 class="footer-title">Contact & Support</h4>
+                    <ul class="footer-contact-list">
+                        <li class="footer-contact-item">
+                            <div class="footer-icon-box"><i data-lucide="phone"></i></div>
+                            <div>
+                                <span class="footer-contact-label">Hotline & WhatsApp</span>
+                                <div><a href="tel:+94742409118" class="footer-contact-val">+94 74 240 9118</a></div>
+                                <div><a href="tel:+94778485258" class="footer-contact-val">+94 77 848 5258</a></div>
+                            </div>
+                        </li>
+                        <li class="footer-contact-item">
+                            <div class="footer-icon-box"><i data-lucide="mail"></i></div>
+                            <div>
+                                <span class="footer-contact-label">Email Support</span>
+                                <div><a href="mailto:jayasooriyatransport.lk@gmail.com" class="footer-contact-val">jayasooriyatransport.lk@gmail.com</a></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="reveal reveal-up" data-delay="400">
+                    <h4 class="footer-title">Management</h4>
+                    <p style="color: rgba(241, 245, 249, 0.6); font-size: 0.85rem; margin-bottom: 1.5rem; line-height: 1.5;">Access administrative tools & dispatch control panel.</p>
+                    <a href="admin/index.html" class="btn-footer-admin">
+                        <i data-lucide="lock"></i> Admin Portal
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Jayasooriya Transport. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/neon-db.js"></script>
+    <script src="js/fleet-data.js"></script>
+    <script src="js/fleet.js"></script>
+    <script src="js/main.js"></script>
+    
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

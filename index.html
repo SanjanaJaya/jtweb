@@ -29,6 +29,7 @@
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#services" class="nav-link">Services</a></li>
                 <li><a href="#fleet" class="nav-link">Fleet</a></li>
+                <li><a href="#gallery" class="nav-link">Gallery</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
 
@@ -62,6 +63,7 @@
                 <li><a href="#about" class="drawer-link drawer-close-trigger">About Us</a></li>
                 <li><a href="#services" class="drawer-link drawer-close-trigger">Our Services</a></li>
                 <li><a href="#fleet" class="drawer-link drawer-close-trigger">Vehicle Fleet</a></li>
+                <li><a href="#gallery" class="drawer-link drawer-close-trigger">Fleet Gallery</a></li>
                 <li><a href="#contact" class="drawer-link drawer-close-trigger">Contact</a></li>
                 <li><a href="admin/index.html" class="drawer-link" style="color:var(--text-subtle); font-size:1rem; margin-top:2rem;">Admin Panel Demo</a></li>
             </ul>
@@ -269,6 +271,27 @@
             <!-- Fleet Grid -->
             <div class="fleet-grid" id="fleetGrid">
                 <!-- Vehicle Cards will be dynamically injected here by fleet.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- FLEET PHOTO GALLERY SECTION (HOMEPAGE PREVIEW) -->
+    <section class="gallery-section" id="gallery">
+        <div class="container">
+            <div class="section-header reveal reveal-up">
+                <div class="section-tag">Fleet Showcase</div>
+                <h2 class="section-heading">Fleet Photo <span class="text-gradient">Gallery</span></h2>
+                <p class="section-subtitle">A visual showcase of our commercial transport operations and vehicle fleet across Sri Lanka.</p>
+            </div>
+
+            <!-- Collage Preview Grid -->
+            <div class="collage-masonry reveal reveal-up" id="homeGalleryGrid" data-delay="150">
+                <!-- Injected dynamically by fleet.js -->
+            </div>
+
+            <!-- View More / Full Gallery Button -->
+            <div class="gallery-cta-wrap reveal reveal-up" data-delay="200" style="text-align: center; margin-top: 3rem;">
+                <a href="gallery.html" class="btn btn-primary btn-lg">View Full Fleet Gallery <i data-lucide="arrow-right"></i></a>
             </div>
         </div>
     </section>

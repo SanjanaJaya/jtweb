@@ -32,6 +32,7 @@
             
             <nav class="sidebar-nav">
                 <a href="javascript:void(0)" class="nav-item active" data-tab="fleet"><i data-lucide="truck"></i> Vehicle Fleet</a>
+                <a href="javascript:void(0)" class="nav-item" data-tab="gallery"><i data-lucide="image"></i> Fleet Gallery</a>
                 <a href="javascript:void(0)" class="nav-item" data-tab="inquiries"><i data-lucide="inbox"></i> Inquiries <span class="badge">Live</span></a>
             </nav>
 
@@ -49,6 +50,7 @@
                 </div>
                 <div class="topbar-actions" id="topbarActions">
                     <button class="btn btn-primary" id="addVehicleBtn"><i data-lucide="plus"></i> Add Vehicle</button>
+                    <button class="btn btn-primary" id="addGalleryPhotoBtn" style="display:none;"><i data-lucide="plus"></i> Add Photo</button>
                 </div>
             </header>
 
@@ -140,10 +142,34 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Fleet Gallery Tab -->
+            <div id="galleryTabContent" style="display:none;">
+                <div class="card table-card">
+                    <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3>Fleet Photo Gallery Inventory</h3>
+                        <button class="btn btn-primary" id="openAddGalleryModalBtn"><i data-lucide="plus"></i> Add Photo to Gallery</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Preview</th>
+                                    <th>Image URL</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="galleryTableBody">
+                                <!-- Injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
-    <!-- Add / Edit Modal -->
+    <!-- Add / Edit Vehicle Modal -->
     <div class="modal-backdrop" id="adminModal">
         <div class="modal-dialog">
             <div class="modal-header">
@@ -235,6 +261,28 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline" id="cancelModalBtn">Cancel</button>
                 <button type="submit" form="vehicleForm" class="btn btn-primary" id="saveVehicleBtn">Save Vehicle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Gallery Photo Modal -->
+    <div class="modal-backdrop" id="galleryModal">
+        <div class="modal-dialog" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Add Fleet Gallery Photo</h3>
+                <button class="close-btn" id="closeGalleryModalBtn"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="galleryForm">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label>Vehicle Image URL</label>
+                        <input type="url" id="gUrl" class="form-control" required placeholder="https://i.postimg.cc/...">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" id="cancelGalleryModalBtn">Cancel</button>
+                <button type="submit" form="galleryForm" class="btn btn-primary" id="saveGalleryBtn">Save Photo</button>
             </div>
         </div>
     </div>
